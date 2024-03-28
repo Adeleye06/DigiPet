@@ -94,16 +94,16 @@ export default function App() {
             <Text style={styles.Text}>Your Pet's Happiness: {happiness}</Text>
             <View style={styles.ButtonContainer}>
                 <Pressable style={styles.Button} onPress={handlePress}>
-                    <Text style={styles.ButtonText}>Make Happy</Text>
+                    <Text style={styles.ButtonText}>Make Pet Happy</Text>
                 </Pressable>
                 <Pressable style={styles.Button} onPress={handleMakeSad}>
-                    <Text style={styles.ButtonText}>Swipe</Text>
+                    <Text style={styles.ButtonText}>Swipe Now</Text>
                 </Pressable>
                 <Pressable style={styles.Button} onPress={handlePetting}>
-                    <Text style={styles.ButtonText}>Pet Me</Text>
+                    <Text style={styles.ButtonText}>Pet Me Please</Text>
                 </Pressable>
                 <Pressable style={styles.Button} onPress={handleUseTreat}>
-                    <Text style={styles.ButtonText}>Give Treat</Text>
+                    <Text style={styles.ButtonText}>Give Treat Please</Text>
                 </Pressable>
             </View>
             <Text style={styles.Text}>Treats left: {treats}</Text>
