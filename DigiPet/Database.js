@@ -3,18 +3,18 @@ import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('pet.db');
 
-const initDB = () => {
+const initializeDB = () => {
     db.transaction(tx => {
         tx.executeSql(
             'CREATE TABLE IF NOT EXISTS pet_state (id INTEGER PRIMARY KEY NOT NULL, happiness INTEGER);',
             [],
-            () => console.log('Table created successfully'),
-            (_, err) => console.log('DB Error: ', err)
+            () => console.log('Table has been created successfully'),
+            (_, error) => console.log('Database Encountered Error: ', error)
         );
     });
 };
 
-const updateHappiness = (happiness) => {
+const writeHappiness = (happiness) => {
     db.transaction(tx => {
         tx.executeSql('UPDATE pet_state SET happiness = ? WHERE id = 1;', [happiness]);
     });
@@ -37,4 +37,4 @@ const getHappiness = (setHappinessCallback) => {
     });
 };
 
-export { initDB, updateHappiness, getHappiness };
+export { initializeDB, writeHappiness, getHappiness };

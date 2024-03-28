@@ -2,28 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Pressable, Image } from 'react-native';
 import { Audio } from 'expo-av';
 import * as Haptics from 'expo-haptics';
-import { initDB, getHappiness, updateHappiness } from './Database';
+import { initializeDB, getHappiness, writeHappiness } from './Database';
 
 export default function App() {
-    const [happiness, setHappiness] = useState(100); // Default happiness level
-    const [treats, setTreats] = useState(5); // Starting with 5 treats
-    const [sound, setSound] = useState();
+    const [happiness, setHappiness] = useState(100); 
+    const [treats, setTreats] = useState(5);
+    const [audio, setAudio] = useState();
 
     useEffect(() => {
-        initDB();
+        initializeDB();
         fetchHappiness();
         loadAudio();
 
-        // Decrease happiness every 5 seconds
+        // happinness would reduce every 5 seconds
         const interval = setInterval(() => {
             setHappiness((currentHappiness) => {
-                const newHappiness = Math.max(currentHappiness - 3, 0); // Ensure happiness doesn't go below 0
-                updateHappiness(newHappiness); // Update the database with the new happiness
-                return newHappiness;
+                const anotherHappiness = Math.max(currentHappiness - 3, 0); 
+                writeHappiness(anotherHappiness);  //write to database
+                return anotherHappiness;
             });
         }, 5000);
 
-        return () => clearInterval(interval); // Cleanup the interval on component unmount
+        return () => clearInterval(interval); 
     }, []);
 
     const fetchHappiness = async () => {
@@ -36,78 +36,79 @@ export default function App() {
             require('./assets/Techbeat.mp3'),
             { shouldPlay: false }
         );
-        setSound(sound);
+        setAudio(sound);
     };
 
     const handlePress = async () => {
-        const newHappiness = Math.min(happiness + 10, 150); // Increase happiness but cap at 150
-        updateHappiness(newHappiness);
-        setHappiness(newHappiness);
+        const anotherHappiness = Math.min(happiness + 10, 150); 
+        writeHappiness(anotherHappiness);
+        setHappiness(anotherHappiness);
         Haptics.selectionAsync();
         playSound();
     };
 
     const handleMakeSad = async () => {
-        const newHappiness = Math.max(happiness - 10, 0); // Decrease happiness but ensure it doesn't go below 0
-        updateHappiness(newHappiness);
-        setHappiness(newHappiness);
+        const anotherHappiness = Math.max(happiness - 10, 0);
+        writeHappiness(anotherHappiness);
+        setHappiness(anotherHappiness);
         Haptics.selectionAsync();
-        playSound(); // Optionally play a sound here as well
+        playSound();
     };
 
     const handlePetting = async () => {
-        const newHappiness = Math.min(happiness + 5, 150); // Increase happiness slightly and cap at 150
-        updateHappiness(newHappiness);
-        setHappiness(newHappiness);
+        const anotherHappiness = Math.min(happiness + 5, 150); 
+        writeHappiness(anotherHappiness);
+        setHappiness(anotherHappiness);
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     };
 
     const handleUseTreat = () => {
         if (treats > 0) {
-            setHappiness(happiness + 20); // Increase happiness by 20
-            setTreats(treats - 1); // Decrease treat count
+            setHappiness(happiness + 20); 
+            setTreats(treats - 1); 
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             playSound();
         }
     };
 
     const playSound = async () => {
-        if (sound) {
+        if (audio) {
             console.log('Playing Sound');
-            await sound.playAsync();
+            await audio.playAsync();
         }
     };
 
     const getPetImageSource = () => {
         if (happiness >= 50) {
-            return require('./assets/smiling.jpeg');
+            return require('./assets/happy.jfif');
         } else if (happiness > 30) {
             return require('./assets/neutral.jpeg');
         } else {
-            return require('./assets/sad.jpeg');
+            return require('./assets/sad.jfif');
         }
     };
 
     return (
         <View style={styles.container}>
-            <Image source={getPetImageSource()} style={styles.petImage} />
-            <Text style={styles.text}>Your Pet's Happiness: {happiness}</Text>
-            <View style={styles.buttonContainer}>
-                <Pressable style={styles.button} onPress={handlePress}>
-                    <Text style={styles.buttonText}>Make Happy</Text>
+            <Image source={getPetImageSource()} style={styles.PetImage} />
+            <Text style={styles.Text}>Your Pet's Happiness: {happiness}</Text>
+            <View style={styles.ButtonContainer}>
+                <Pressable style={styles.Button} onPress={handlePress}>
+                    <Text style={styles.ButtonText}>Make Happy</Text>
                 </Pressable>
-                <Pressable style={styles.button} onPress={handleMakeSad}>
-                    <Text style={styles.buttonText}>Swipe</Text>
+                <Pressable style={styles.Button} onPress={handleMakeSad}>
+                    <Text style={styles.ButtonText}>Swipe</Text>
                 </Pressable>
-                <Pressable style={styles.button} onPress={handlePetting}>
-                    <Text style={styles.buttonText}>Pet Me</Text>
+                <Pressable style={styles.Button} onPress={handlePetting}>
+                    <Text style={styles.ButtonText}>Pet Me</Text>
                 </Pressable>
-                <Pressable style={styles.button} onPress={handleUseTreat}>
-                    <Text style={styles.buttonText}>Give Treat</Text>
+                <Pressable style={styles.Button} onPress={handleUseTreat}>
+                    <Text style={styles.ButtonText}>Give Treat</Text>
                 </Pressable>
             </View>
-            <Text style={styles.text}>Treats left: {treats}</Text>
+            <Text style={styles.Text}>Treats left: {treats}</Text>
         </View>
+
     );
 }
 
@@ -116,35 +117,40 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: '#E8EAED',
     },
-    text: {
-        fontSize: 20,
+    Text: {
+        fontSize: 22,
         textAlign: 'center',
-        marginVertical: 10,
+        marginVertical: 12,
+        color: '#333',
     },
-    buttonContainer: {
+    ButtonContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
         alignItems: 'center',
+        marginTop: 20,
     },
-    button: {
+    Button: {
         margin: 10,
-        backgroundColor: 'skyblue',
+        backgroundColor: '#4CAF50',
         paddingVertical: 15,
         paddingHorizontal: 30,
-        borderRadius: 8,
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
     },
-    buttonText: {
+    ButtonText: {
         color: '#fff',
         fontSize: 18,
+        fontWeight: 'bold',
     },
-    petImage: {
-        width: 100,
-        height: 100,
-        marginBottom: 20,
+    PetImage: {
+        width: 120,
+        height: 120,
+        marginBottom: 24,
+        borderRadius: 60,
     },
 });
+
