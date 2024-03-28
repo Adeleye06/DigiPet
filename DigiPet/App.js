@@ -33,7 +33,7 @@ export default function App() {
     const loadAudio = async () => {
         console.log('Loading Sound');
         const { sound } = await Audio.Sound.createAsync(
-            require('./assets/Techbeat.mp3'),
+            require('./assets/beat.mp3'),
             { shouldPlay: false }
         );
         setAudio(sound);
