@@ -21,7 +21,7 @@ export default function App() {
                 writeHappiness(anotherHappiness);  //write to database
                 return anotherHappiness;
             });
-        }, 5000);
+        }, 6000);
 
         return () => clearInterval(interval); 
     }, []);
